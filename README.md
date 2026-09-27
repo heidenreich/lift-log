@@ -9,6 +9,7 @@ Open `index.html` in a browser, tap **Load Strong CSV**, and pick your export. T
 - Totals: workouts, this year, last 30 days, week streak, total volume, exercises
 - Per-exercise progress over time: estimated 1RM, heaviest set, session volume or most reps, with PRs marked
 - Workouts per week (last 26 weeks) and monthly volume
+- Cardio: time and distance exercises (elliptical, runs, rows), with minutes per week and totals per exercise
 - A personal records table with change since you started each lift
 
 ## Exporting from Strong
@@ -26,5 +27,6 @@ Open https://heidenreich.github.io/lift-log/ in Safari, tap Share, then **Add to
 ## Notes
 
 - Warm-up sets (`W`) are excluded from records and volume; rest timer rows are ignored.
+- Rows with no reps but a time or distance count as cardio. Distance follows the unit switch: mi with lb, km with kg.
 - Estimated 1RM uses the Epley formula, `weight × (1 + reps / 30)`, on sets of 12 reps or fewer.
 - Works with comma- or semicolon-delimited exports.
