@@ -4,6 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Lift Log</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Lift Log">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#f2f4f6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#111317" media="(prefers-color-scheme: dark)">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="manifest" href="manifest.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap">
@@ -40,7 +50,7 @@
 }
 * { box-sizing: border-box; }
 body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.5; }
-.wrap { max-width: 1040px; margin: 0 auto; padding-inline: 16px; padding-block: 20px 48px; display: flex; flex-direction: column; gap: 20px; }
+.wrap { max-width: 1040px; margin: 0 auto; padding-inline: max(16px, env(safe-area-inset-left, 0px)) max(16px, env(safe-area-inset-right, 0px)); padding-block: calc(20px + env(safe-area-inset-top, 0px)) calc(48px + env(safe-area-inset-bottom, 0px)); display: flex; flex-direction: column; gap: 20px; }
 h1, h2 { font-family: var(--display); font-weight: 700; letter-spacing: .01em; text-wrap: balance; margin: 0; line-height: 1.05; }
 h1 { font-size: clamp(34px, 7vw, 52px); text-transform: uppercase; }
 h2 { font-size: 22px; text-transform: uppercase; letter-spacing: .03em; }
@@ -192,6 +202,7 @@ tbody tr:hover, tbody tr.sel { background: var(--s1-soft); }
       <li>Choose <strong>Save to Files</strong> (iPhone) or save it to your Downloads (Android).</li>
       <li>Come back here, tap <strong>Load Strong CSV</strong> and pick the file.</li>
     </ol>
+    <p><strong>Add it to your iPhone home screen:</strong> open this page in Safari, tap the Share button, then <strong>Add to Home Screen</strong>. The home-screen app keeps its own copy of your data, so load your CSV again the first time you open it from there.</p>
     <p>The export doesn't record which unit you use, so set lb or kg above to match your Strong settings. Warm-up sets are left out of records and volume. Estimated 1RM uses the Epley formula (weight × (1 + reps ÷ 30)) on sets of 12 reps or fewer.</p>
   </section>
 </div>

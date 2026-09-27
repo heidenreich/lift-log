@@ -19,6 +19,10 @@ Open `index.html` in a browser, tap **Load Strong CSV**, and pick your export. T
 
 The export doesn't record your unit, so set lb or kg on the page to match your Strong settings.
 
+## Add to your iPhone home screen
+
+Open https://heidenreich.github.io/lift-log/ in Safari, tap Share, then **Add to Home Screen**. It opens full screen with the Lift Log icon. The home-screen app keeps its own storage, separate from Safari, so load your CSV once from inside it.
+
 ## Notes
 
 - Warm-up sets (`W`) are excluded from records and volume; rest timer rows are ignored.
