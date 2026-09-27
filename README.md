@@ -20,6 +20,19 @@ Open `index.html` in a browser, tap **Load Strong CSV**, and pick your export. T
 
 The export doesn't record your unit, so set lb or kg on the page to match your Strong settings.
 
+## Daily steps from iPhone
+
+Web pages can't read Apple Health, so a Shortcut writes your daily steps to `lift-log-steps.csv` in iCloud Drive › Shortcuts, and you load that file with **Load steps**. The page has step-by-step instructions for building the Shortcut (Find Health Samples → Repeat with Each → Format Date → Text → Combine Text → Save File).
+
+The file is plain CSV, one row per day:
+
+```
+Date,Steps
+2026-09-21,8412
+```
+
+Each file you load merges into the steps already saved; for a day that appears in both, the newer file wins. The panel shows the latest day, 7- and 30-day averages, days at 10,000+ steps and your best day, plus a 90-day chart.
+
 ## Add to your iPhone home screen
 
 Open https://heidenreich.github.io/lift-log/ in Safari, tap Share, then **Add to Home Screen**. It opens full screen with the Lift Log icon. The home-screen app keeps its own storage, separate from Safari, so load your CSV once from inside it.
