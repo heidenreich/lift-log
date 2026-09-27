@@ -20,18 +20,23 @@ Open `index.html` in a browser, tap **Load Strong CSV**, and pick your export. T
 
 The export doesn't record your unit, so set lb or kg on the page to match your Strong settings.
 
-## Daily steps from iPhone
+## Walking data from iPhone
 
-Web pages can't read Apple Health, so a Shortcut writes your daily steps to `lift-log-steps.csv` in iCloud Drive › Shortcuts, and you load that file with **Load steps**. The page has step-by-step instructions for building the Shortcut (Find Health Samples → Repeat with Each → Format Date → Text → Combine Text → Save File).
+Web pages can't read Apple Health, so three iPhone Shortcuts write CSV files to iCloud Drive › Shortcuts, and **Load Health files** reads them (you can select all three at once). The page has step-by-step instructions for building the Shortcuts.
 
-The file is plain CSV, one row per day:
+| File | Header | One row per |
+|---|---|---|
+| `lift-log-steps.csv` | `Date,Steps` | day, e.g. `2026-09-21,8412` |
+| `lift-log-distance.csv` | `Date,Distance` | day, Walking + Running Distance, e.g. `2026-09-21,2.4` |
+| `lift-log-walks.csv` | `Date,Type,Duration,Distance` | workout, e.g. `2026-09-21 07:15,Walking,32 min,1.6` |
 
-```
-Date,Steps
-2026-09-21,8412
-```
+The Walking panel shows:
 
-Each file you load merges into the steps already saved; for a day that appears in both, the newer file wins. The panel shows the latest day, 7- and 30-day averages, days at 10,000+ steps and your best day, plus a 90-day chart.
+- **Daily steps**: latest day, 7- and 30-day averages, days at 10,000+, best day, and a 90-day chart with a goal line
+- **Walking distance**: latest day, 7-day average, this week, last 30 days, best day, and weekly totals
+- **Walks**: walks, time and distance over the last 30 days, longest walk, and the 10 most recent walks with pace
+
+Only walking and hiking workouts are kept from the walks file. Durations can be minutes, seconds, `h:mm:ss` or text like `1 hr 20 min`. Each file you load merges into what's saved; for a day or walk that appears in both, the newer file wins. Distance follows the unit switch (mi with lb, km with kg), and walking data never changes workout counts or the streak.
 
 ## Add to your iPhone home screen
 
