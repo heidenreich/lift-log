@@ -11,13 +11,14 @@ Open `index.html` in a browser, tap **Load Strong CSV**, and pick your export. T
 Progress first, built around steady machine and free-weight training rather than max lifts:
 
 - **Summary**: how many exercises you're stronger on since you started, and your biggest gains
+- **Total weight lifted**: lifetime total with an everyday comparison, per-workout average now vs. when you started, best workout, this week and month, the next milestone, and a chart per workout, week or month
 - **Weekly goals**: strength days (goal 2) and active minutes (goal 150) this week and for the last 8 weeks, based on the standard health guidelines for adults
 - **Ready to go up**: exercises where you've finished every set at the same weight 3+ sessions in a row, with the next weight to try
 - **Worth a look**: exercises more than 10% below your best
 - **Your exercises**: a card per exercise with starting → current working weight and a trend line
 - **Body areas**: days you trained legs, push, pull and core in the last 4 weeks
 - **Walking** and **Cardio** from Apple Health and Strong
-- **Details**: totals, per-exercise charts (working weight, heaviest set, estimated 1RM, volume, reps), workouts per week, monthly volume and the full exercise table
+- **Details**: totals, per-exercise charts (working weight, heaviest set, estimated 1RM, volume, reps), workouts per week and the full exercise table
 
 **Working weight** is the heaviest weight you lifted for 8 or more reps in a session (or your heaviest set if you never did 8).
 

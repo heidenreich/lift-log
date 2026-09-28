@@ -152,6 +152,10 @@ h3 { font-family: var(--display); font-weight: 600; font-size: 18px; text-transf
 .areas { display: flex; flex-direction: column; gap: 14px; }
 .area { display: grid; grid-template-columns: 1fr; gap: 6px; }
 .area .top { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.lift-total { display: flex; flex-direction: column; gap: 2px; }
+.lift-total .v { font-family: var(--display); font-size: clamp(44px, 11vw, 64px); font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; }
+.lift-total .v small { font-size: .4em; color: var(--muted); font-weight: 600; margin-left: 4px; }
+.lift-total .cmp { font-size: 16px; color: var(--ink-2); }
 .divider { display: flex; flex-direction: column; gap: 2px; padding-top: 12px; border-top: 2px solid var(--line); }
 .divider p { margin: 0; }
 #walks-body th, #walks-body td { padding-inline: 6px; }
@@ -196,6 +200,25 @@ tbody tr:hover, tbody tr.sel { background: var(--s1-soft); }
 
 
   <section class="hero" id="hero" aria-live="polite"></section>
+
+  <section class="panel" id="lifted">
+    <div class="panel-head">
+      <div>
+        <h2>Total weight lifted</h2>
+        <div class="sub help" id="lift-sub"></div>
+      </div>
+      <div class="seg" role="group" aria-label="Show weight lifted per" id="lift-view">
+        <button type="button" data-v="workout" aria-pressed="true">Workout</button>
+        <button type="button" data-v="week" aria-pressed="false">Week</button>
+        <button type="button" data-v="month" aria-pressed="false">Month</button>
+      </div>
+    </div>
+    <div class="lift-total"><span class="v" id="lift-total"></span><span class="cmp" id="lift-compare"></span></div>
+    <div class="stats" id="lift-stats"></div>
+    <div class="legend"><span><i class="sw"></i><span id="lift-lg">Weight lifted per workout</span></span><span><i class="sw goal"></i>Your average</span></div>
+    <div class="chart" id="c-lift"></div>
+    <p class="help" id="lift-next"></p>
+  </section>
 
   <section class="panel" id="week-check">
     <div>
@@ -331,22 +354,13 @@ tbody tr:hover, tbody tr.sel { background: var(--s1-soft); }
     <div class="stats" id="ex-stats"></div>
   </section>
 
-  <div class="two">
-    <section class="panel">
-      <div>
-        <h2>Workouts per week</h2>
-        <div class="sub help" id="wk-sub">Last 26 weeks</div>
-      </div>
-      <div class="chart" id="c-week"></div>
-    </section>
-    <section class="panel">
-      <div>
-        <h2>Monthly volume</h2>
-        <div class="sub help" id="vol-sub">Weight × reps across working sets</div>
-      </div>
-      <div class="chart" id="c-vol"></div>
-    </section>
-  </div>
+  <section class="panel">
+    <div>
+      <h2>Workouts per week</h2>
+      <div class="sub help" id="wk-sub">Last 26 weeks</div>
+    </div>
+    <div class="chart" id="c-week"></div>
+  </section>
 
   <section class="panel">
     <div>
@@ -412,7 +426,7 @@ tbody tr:hover, tbody tr.sel { background: var(--s1-soft); }
 (() => {
 const $ = id => document.getElementById(id);
 const DAY = 864e5;
-const state = { rows: [], cardio: [], steps: new Map(), dist: new Map(), walks: [], healthSample: true, sample: true, unit: 'lb', ex: null, metric: 'work', stats: [], range: 0 };
+const state = { rows: [], cardio: [], steps: new Map(), dist: new Map(), walks: [], healthSample: true, sample: true, unit: 'lb', ex: null, metric: 'work', stats: [], liftView: 'workout', range: 0 };
 const store = {
   get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
   set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} },
@@ -754,7 +768,7 @@ function renderTiles() {
     ['This year', fmt(thisYear), 'workouts in ' + yr],
     ['Last 30 days', fmt(last30), last30 >= 12 ? 'about 3 a week' : fmt(last30 / 4.3, 1) + ' a week'],
     ['Week streak', fmt(streak), streak === 1 ? 'week in a row' : 'weeks in a row'],
-    ['Total volume', compact(vol) + `<small>${U()}</small>`, fmt(sets) + ' working sets'],
+    ['Total lifted', compact(vol) + `<small>${U()}</small>`, fmt(sets) + ' working sets'],
     ['Exercises', fmt(new Set(rows.map(r => r.ex)).size), times.length ? fmt(sets / times.length, 0) + ' sets per workout' : '']
   ];
   $('tiles').innerHTML = tiles.map(([k, v, d]) => `<div class="tile"><span class="eyebrow">${k}</span><span class="v">${v}</span><span class="d">${d}</span></div>`).join('');
@@ -821,19 +835,6 @@ function renderWeeks() {
   $('wk-sub').textContent = `26 weeks ending ${fmtD(new Date(end + 6 * DAY), { month: 'short', day: 'numeric' })} · average ${fmt(avg, 1)} a week`;
   barChart($('c-week'), bars, { yFmt: v => fmt(v), label: 'Workouts per week', labelEvery: $('c-week').clientWidth < 420 ? 8 : 4,
     tipFmt: b => `<b>${b.v} workout${b.v === 1 ? '' : 's'}</b><br>Week of ${fmtD(b.d)}` });
-}
-
-function renderVolume() {
-  const m = new Map();
-  state.rows.forEach(r => { if (r.warm) return; const k = r.d.getFullYear() * 12 + r.d.getMonth(); m.set(k, (m.get(k) || 0) + r.w * r.reps); });
-  const keys = [...m.keys()].sort((a, b) => a - b); const bars = [];
-  if (keys.length) {
-    const last = keys[keys.length - 1], first = Math.max(keys[0], last - 11);
-    for (let k = first; k <= last; k++) { const d = new Date(Math.floor(k / 12), k % 12, 1); bars.push({ v: m.get(k) || 0, d, lab: fmtD(d, { month: 'short' }) }); }
-  }
-  $('vol-sub').textContent = `Weight × reps across working sets, in ${U()}, last ${bars.length} month${bars.length === 1 ? '' : 's'}`;
-  barChart($('c-vol'), bars, { yFmt: compact, label: 'Monthly volume', labelEvery: $('c-vol').clientWidth < 420 ? 2 : 1,
-    tipFmt: b => `<b>${fmt(b.v)} ${U()}</b><br>${fmtD(b.d, { month: 'long', year: 'numeric' })}` });
 }
 
 function renderPRs() {
@@ -1092,10 +1093,93 @@ function renderAreas() {
   }).join('');
 }
 
+// Everyday objects for scale, in pounds (rounded, typical weights)
+const REFS = [
+  ['a grand piano', 'grand pianos', 1000], ['a car', 'cars', 4000], ['an elephant', 'elephants', 13000],
+  ['a school bus', 'school buses', 25000], ['an empty Boeing 737', 'empty Boeing 737s', 91000],
+  ['a blue whale', 'blue whales', 300000], ['the Statue of Liberty', 'Statues of Liberty', 450000]
+];
+function liftWorkouts() {
+  const m = new Map();
+  state.rows.forEach(r => {
+    if (r.warm) return;
+    let o = m.get(r.wk); if (!o) m.set(r.wk, o = { t: r.t, d: r.d, name: r.wk.split('|')[0], v: 0, sets: 0 });
+    o.v += r.w * r.reps; o.sets++;
+  });
+  return [...m.values()].filter(o => o.v > 0).sort((a, b) => a.t - b.t);
+}
+function milestone(n) {
+  const mag = Math.pow(10, Math.floor(Math.log10(Math.max(n, 1))));
+  return [1, 1.5, 2, 2.5, 3, 4, 5, 6, 7, 7.5, 8, 9, 10].map(x => x * mag).find(x => x > n);
+}
+function renderLifted() {
+  const ws = liftWorkouts(), sec = $('lifted');
+  sec.hidden = !ws.length; if (!ws.length) return;
+  const u = U(), total = ws.reduce((a, w) => a + w.v, 0), first = ws[0], last = ws[ws.length - 1];
+  $('lift-total').innerHTML = `${fmt(total)}<small>${u}</small>`;
+  const lbTotal = u === 'kg' ? total * 2.20462 : total;
+  let ref = null; REFS.forEach(x => { if (x[2] <= lbTotal) ref = x; });
+  const refW = r => u === 'kg' ? `${fmt(Math.round(r[2] / 2.20462 / 100) * 100)} kg` : `${fmt(r[2])} lb`;
+  $('lift-compare').textContent = ref ? (lbTotal / ref[2] < 1.5 ? `More than ${ref[0]}` : `About as much as ${fmt(Math.round(lbTotal / ref[2]))} ${ref[1]}`) + ` (${ref[0]} weighs about ${refW(ref)}).` : '';
+  $('lift-sub').textContent = `${fmt(ws.length)} workouts since ${fmtD(first.d)}`;
+
+  const cur = weekStart(Date.now()), now = new Date();
+  const thisWeek = ws.filter(w => weekStart(w.t) === cur).reduce((a, w) => a + w.v, 0);
+  const thisMonth = ws.filter(w => w.d.getFullYear() === now.getFullYear() && w.d.getMonth() === now.getMonth()).reduce((a, w) => a + w.v, 0);
+  const early = ws.filter(w => w.t <= first.t + 30 * DAY), late = ws.filter(w => w.t >= last.t - 30 * DAY);
+  const avg = a => a.reduce((x, w) => x + w.v, 0) / a.length, lateAvg = avg(late), earlyAvg = avg(early);
+  const grow = last.t - first.t > 45 * DAY ? (lateAvg - earlyAvg) / earlyAvg * 100 : null;
+  const best = ws.reduce((a, w) => w.v > a.v ? w : a, ws[0]);
+  $('lift-stats').innerHTML = statHTML([
+    ['Per workout, last 30 days', `${fmt(lateAvg)}<small> ${u}</small>`],
+    grow == null ? ['Per workout, all time', `${fmt(avg(ws))}<small> ${u}</small>`]
+      : [`Change since ${monthD(first.t)}`, `<span class="${grow >= 0 ? 'up' : 'down'}">${grow >= 0 ? '+' : ''}${fmt(grow, 0)}%</span><small> per workout</small>`],
+    ['Best workout', `${fmt(best.v)}<small> ${u} ${fmtD(best.d, { month: 'short', day: 'numeric' })}</small>`],
+    ['This week', `${fmt(thisWeek)}<small> ${u}</small>`],
+    ['This month', `${fmt(thisMonth)}<small> ${u}</small>`]
+  ]);
+
+  const view = state.liftView, lab = d => fmtD(d, { month: 'short' });
+  let bars = [], label, tip;
+  if (view === 'workout') {
+    const shown = ws.slice(-40);
+    bars = shown.map((w, i) => ({ v: w.v, d: w.d, name: w.name, sets: w.sets, lab: i === 0 || w.d.getMonth() !== shown[i - 1].d.getMonth() ? lab(w.d) : '' }));
+    label = 'Weight lifted per workout';
+    tip = b => `<b>${fmt(b.v)} ${u}</b><br>${esc(b.name)}, ${fmtD(b.d, { weekday: 'short', month: 'short', day: 'numeric' })}<br>${b.sets} sets`;
+  } else if (view === 'week') {
+    const m = new Map(); ws.forEach(w => { const k = weekStart(w.t), o = m.get(k) || { v: 0, n: 0 }; o.v += w.v; o.n++; m.set(k, o); });
+    const end = chartEnd(), firstW = weekStart(first.t);
+    for (let i = 25; i >= 0; i--) {
+      const k = weekStart(end + 3 * DAY - i * 7 * DAY); if (k < firstW) continue;
+      const o = m.get(k), d = new Date(k);
+      bars.push({ v: o ? o.v : 0, n: o ? o.n : 0, d, lab: '' });
+    }
+    bars.forEach((b, i) => { if (i === 0 || b.d.getMonth() !== bars[i - 1].d.getMonth()) b.lab = lab(b.d); });
+    label = 'Weight lifted per week';
+    tip = b => `<b>${fmt(b.v)} ${u}</b><br>Week of ${fmtD(b.d, { month: 'short', day: 'numeric' })}<br>${b.n} workout${b.n === 1 ? '' : 's'}`;
+  } else {
+    const m = new Map(); ws.forEach(w => { const k = w.d.getFullYear() * 12 + w.d.getMonth(), o = m.get(k) || { v: 0, n: 0 }; o.v += w.v; o.n++; m.set(k, o); });
+    const keys = [...m.keys()].sort((a, b) => a - b), lastK = keys[keys.length - 1];
+    for (let k = Math.max(keys[0], lastK - 11); k <= lastK; k++) { const o = m.get(k), d = new Date(Math.floor(k / 12), k % 12, 1); bars.push({ v: o ? o.v : 0, n: o ? o.n : 0, d, lab: lab(d) }); }
+    label = 'Weight lifted per month';
+    tip = b => `<b>${fmt(b.v)} ${u}</b><br>${fmtD(b.d, { month: 'long', year: 'numeric' })}<br>${b.n} workout${b.n === 1 ? '' : 's'}`;
+  }
+  const active = view === 'workout' ? bars : bars.filter(b => b.v > 0), mean = active.reduce((a, b) => a + b.v, 0) / (active.length || 1);
+  $('lift-lg').textContent = label;
+  const narrow = $('c-lift').clientWidth < 420;
+  barChart($('c-lift'), bars, { yFmt: compact, label, labelEvery: 1, ref: mean, tipFmt: tip });
+  if (narrow && view === 'month' && bars.length > 6) $('c-lift').querySelectorAll('svg > text[text-anchor="middle"]').forEach((t, i) => { if (i % 2) t.remove(); });
+
+  const next = milestone(total), togo = next - total, per = lateAvg || avg(ws);
+  const hasBw = state.stats.some(st => st.bw);
+  $('lift-next').innerHTML = `<strong>Next milestone: ${fmt(next)} ${u}.</strong> ${fmt(togo)} ${u} to go, about ${fmt(Math.max(1, Math.ceil(togo / per)))} workout${Math.ceil(togo / per) === 1 ? '' : 's'} at your recent pace. ` +
+    `Weight lifted is weight × reps for every working set; warm-ups${hasBw ? ' and bodyweight exercises' : ''} aren't counted.`;
+}
+
 function renderAll() {
   state.stats = exerciseList().map(o => exStats(o.ex)).filter(Boolean);
-  renderHero(); renderWeekCheck(); renderReady(); renderCards(); renderAreas();
-  renderTiles(); renderExercise(); renderWeeks(); renderVolume(); renderCardio(); renderWalking(); renderPRs();
+  renderHero(); renderLifted(); renderWeekCheck(); renderReady(); renderCards(); renderAreas();
+  renderTiles(); renderExercise(); renderWeeks(); renderCardio(); renderWalking(); renderPRs();
   $('status').innerHTML = state.sample
     ? '<span class="chip">Sample</span> Showing made-up example data. <strong>Load your Strong CSV</strong> to see your own numbers, or drop the file here.'
     : `<span class="chip real">Your data</span> ${fmt(state.rows.length)} sets${state.cardio.length ? ` and ${fmt(state.cardio.length)} cardio entries` : ''} from <strong>${esc(state.file || 'your Strong export')}</strong>. Saved in this browser only.`;
@@ -1156,6 +1240,10 @@ const ban = $('banner');
 ['dragleave', 'drop'].forEach(t => document.addEventListener(t, e => { e.preventDefault(); if (t === 'drop' || !e.relatedTarget) ban.classList.remove('drag'); }));
 document.addEventListener('drop', e => readFiles(e.dataTransfer && e.dataTransfer.files));
 $('reset').addEventListener('click', () => { store.del('liftlog.csv'); store.del('liftlog.name'); ['liftlog.steps', 'liftlog.dist', 'liftlog.walks'].forEach(k => store.del(k)); Object.assign(state, sampleHealth()); state.healthSample = true; Object.assign(state, sample()); state.sample = true; state.ex = null; state.metric = 'work'; setUnit('lb', false); renderAll(); });
+$('lift-view').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return; state.liftView = b.dataset.v;
+  $('lift-view').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b)); renderLifted();
+});
 $('u-lb').addEventListener('click', () => { setUnit('lb'); renderAll(); });
 $('u-kg').addEventListener('click', () => { setUnit('kg'); renderAll(); });
 $('ex').addEventListener('change', e => { state.ex = e.target.value; state.metric = 'work'; renderExercise(); renderPRs(); });
@@ -1168,7 +1256,7 @@ const pick = tr => { state.ex = tr.dataset.ex; state.metric = 'work'; renderExer
 $('pr-body').addEventListener('click', e => { const tr = e.target.closest('tr'); if (tr) pick(tr); });
 $('cards').addEventListener('click', e => { const c = e.target.closest('.card'); if (c) pick(c); });
 $('pr-body').addEventListener('keydown', e => { const tr = e.target.closest('tr'); if (tr && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); pick(tr); } });
-let rz; window.addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => { renderExercise(); renderWeeks(); renderVolume(); renderCardio(); renderWalking(); }, 150); });
+let rz; window.addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => { renderLifted(); renderExercise(); renderWeeks(); renderCardio(); renderWalking(); }, 150); });
 
 const savedUnit = store.get('liftlog.unit'); if (savedUnit === 'kg' || savedUnit === 'lb') setUnit(savedUnit, false);
 try {
