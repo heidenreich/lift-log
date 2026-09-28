@@ -31,6 +31,9 @@
   --pr: #eb6834;
   --good: #1a7f37;
   --bad: #c0362c;
+  --warn: #9a5b00;
+  --on-good: #ffffff;
+  --on-warn: #ffffff;
   --display: "Barlow Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
   --body: "Barlow", system-ui, -apple-system, "Segoe UI", sans-serif;
 }
@@ -39,14 +42,14 @@
     color-scheme: dark;
     --bg: #111317; --surface: #1a1c21; --ink: #f3f4f6; --ink-2: #c1c6cf; --muted: #8b92a0;
     --line: #2d3139; --grid: #24272e; --s1: #3987e5; --s1-soft: rgba(57,135,229,.18);
-    --pr: #e0703f; --good: #4cc26b; --bad: #ef6b60;
+    --pr: #e0703f; --good: #4cc26b; --bad: #ef6b60; --warn: #f0b04a; --on-good: #0c1a10; --on-warn: #1f1400;
   }
 }
 :root[data-theme="dark"] {
   color-scheme: dark;
   --bg: #111317; --surface: #1a1c21; --ink: #f3f4f6; --ink-2: #c1c6cf; --muted: #8b92a0;
   --line: #2d3139; --grid: #24272e; --s1: #3987e5; --s1-soft: rgba(57,135,229,.18);
-  --pr: #e0703f; --good: #4cc26b; --bad: #ef6b60;
+  --pr: #e0703f; --good: #4cc26b; --bad: #ef6b60; --warn: #f0b04a; --on-good: #0c1a10; --on-warn: #1f1400;
 }
 * { box-sizing: border-box; }
 body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.5; }
@@ -107,6 +110,50 @@ tbody tr { cursor: pointer; }
 .block + .block { border-top: 1px solid var(--line); padding-top: 16px; }
 h3 { font-family: var(--display); font-weight: 600; font-size: 18px; text-transform: uppercase; letter-spacing: .04em; margin: 0; }
 .miss { color: var(--muted); font-size: 14px; margin: 0; }
+.hero { display: flex; flex-direction: column; gap: 8px; padding-block: 4px; }
+.hero .big { color: var(--ink); font-family: var(--display); font-size: clamp(30px, 6.5vw, 46px); font-weight: 700; line-height: 1.05; text-wrap: balance; margin: 0; }
+.hero .big em { font-style: normal; color: var(--s1); }
+.hero p { margin: 0; color: var(--ink-2); max-width: 62ch; }
+.meters { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+.meter { display: flex; flex-direction: column; gap: 6px; }
+.meter .k { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; font-weight: 600; }
+.meter .v { font-family: var(--display); font-size: 30px; font-weight: 600; line-height: 1; font-variant-numeric: tabular-nums; }
+.meter .v small { font-size: 16px; color: var(--muted); font-weight: 500; }
+.bar { height: 10px; border-radius: 5px; background: var(--grid); overflow: hidden; }
+.bar i { display: block; height: 100%; border-radius: 5px; background: var(--s1); }
+.bar.met i { background: var(--good); }
+.st { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 700; letter-spacing: .03em; padding: 2px 8px; border-radius: 99px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.st-up { background: var(--good); color: var(--on-good); }
+.st-hold { background: var(--grid); color: var(--ink-2); }
+.st-down { background: var(--warn); color: var(--on-warn); }
+.wk { display: flex; flex-direction: column; gap: 6px; }
+.wk .lab { font-size: 13px; color: var(--ink-2); }
+.wkrow { display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px; }
+.wkrow .c { height: 30px; border-radius: 5px; display: grid; place-items: center; background: var(--grid); color: var(--ink-2); font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.wkrow .c.met { background: var(--good); color: var(--on-good); }
+.wkrow .c.now { box-shadow: inset 0 0 0 2px var(--s1); }
+.wkrow.dates span { font-size: 11px; color: var(--muted); text-align: center; white-space: nowrap; }
+.list { display: flex; flex-direction: column; }
+.list .row { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding-block: 10px; border-top: 1px solid var(--grid); }
+.list .row:first-child { border-top: 0; }
+.nm { font-weight: 600; line-height: 1.25; }
+.kind { font-size: 13px; color: var(--muted); }
+.sugg { text-align: right; white-space: nowrap; font-size: 14px; color: var(--ink-2); }
+.sugg b { font-family: var(--display); font-size: 22px; font-weight: 600; color: var(--ink); }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.card { font: inherit; color: inherit; text-align: left; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 12px; display: flex; flex-direction: column; gap: 6px; cursor: pointer; min-width: 0; }
+.card:hover { border-color: var(--s1); }
+.card:focus-visible { outline: 2px solid var(--s1); outline-offset: 2px; }
+.card .ww { font-family: var(--display); font-size: 22px; font-weight: 600; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.card .ww small { font-size: 14px; color: var(--muted); font-weight: 500; }
+.spark { position: relative; height: 34px; }
+.spark svg { display: block; width: 100%; height: 100%; }
+.spark i { position: absolute; width: 8px; height: 8px; border-radius: 50%; background: var(--s1); box-shadow: 0 0 0 2px var(--surface); transform: translate(-50%, -50%); }
+.areas { display: flex; flex-direction: column; gap: 14px; }
+.area { display: grid; grid-template-columns: 1fr; gap: 6px; }
+.area .top { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.divider { display: flex; flex-direction: column; gap: 2px; padding-top: 12px; border-top: 2px solid var(--line); }
+.divider p { margin: 0; }
 #walks-body th, #walks-body td { padding-inline: 6px; }
 #walks-body th:first-child, #walks-body td:first-child { padding-left: 0; }
 .stats .v small { font-size: 15px; color: var(--muted); font-weight: 500; }
@@ -146,65 +193,51 @@ tbody tr:hover, tbody tr.sel { background: var(--s1-soft); }
     <button type="button" class="btn" id="reset" hidden>Show sample data</button>
   </div>
 
-  <div class="tiles" id="tiles"></div>
 
-  <section class="panel">
-    <div class="panel-head">
-      <div>
-        <h2 id="ex-title">Exercise progress</h2>
-        <div class="sub" id="ex-sub"></div>
-      </div>
-      <div class="controls">
-        <select id="ex" aria-label="Exercise"></select>
-        <select id="metric" aria-label="Metric">
-          <option value="e1rm">Estimated 1-rep max</option>
-          <option value="top">Heaviest set</option>
-          <option value="vol">Session volume</option>
-          <option value="reps">Most reps in a set</option>
-        </select>
-      </div>
+
+  <section class="hero" id="hero" aria-live="polite"></section>
+
+  <section class="panel" id="week-check">
+    <div>
+      <h2>Weekly goals</h2>
+      <div class="sub help">Health guidelines for adults: strength training at least 2 days a week, and at least 150 minutes of moderate activity like brisk walking or the elliptical.</div>
     </div>
-    <div class="seg" role="group" aria-label="Time range" id="range">
-      <button type="button" data-r="90" aria-pressed="false">3M</button>
-      <button type="button" data-r="182" aria-pressed="false">6M</button>
-      <button type="button" data-r="365" aria-pressed="false">1Y</button>
-      <button type="button" data-r="0" aria-pressed="true">All</button>
-    </div>
-    <div class="legend"><span><i class="sw"></i><span id="lg-metric">Estimated 1RM, best set per session</span></span><span><i class="sw dot"></i>New personal record</span></div>
-    <div class="chart" id="c-ex"></div>
-    <div class="stats" id="ex-stats"></div>
+    <div class="meters" id="meters"></div>
+    <div class="wk" id="wk-grid"></div>
+    <div class="help" id="wk-note"></div>
   </section>
 
   <div class="two">
     <section class="panel">
       <div>
-        <h2>Workouts per week</h2>
-        <div class="sub help" id="wk-sub">Last 26 weeks</div>
+        <h2>Ready to go up</h2>
+        <div class="sub help">You finished every set at the same weight 3 or more sessions in a row. Try the next weight up next time.</div>
       </div>
-      <div class="chart" id="c-week"></div>
+      <div class="list" id="ready"></div>
     </section>
     <section class="panel">
       <div>
-        <h2>Monthly volume</h2>
-        <div class="sub help" id="vol-sub">Weight × reps across working sets</div>
+        <h2>Worth a look</h2>
+        <div class="sub help">Exercises more than 10% below your best. That's fine if you lowered the weight on purpose.</div>
       </div>
-      <div class="chart" id="c-vol"></div>
+      <div class="list" id="lower"></div>
     </section>
   </div>
 
-  <section class="panel" id="cardio" hidden>
+  <section class="panel">
     <div>
-      <h2>Cardio</h2>
-      <div class="sub help" id="cardio-sub">Timed and distance exercises</div>
+      <h2>Your exercises</h2>
+      <div class="sub help" id="cards-sub">Working weight from your first session to your latest. Tap one for the full chart.</div>
     </div>
-    <div class="stats" id="cardio-stats"></div>
-    <div class="chart" id="c-cardio"></div>
-    <div class="tbl">
-      <table>
-        <thead><tr><th>Exercise</th><th class="r">Sessions</th><th class="r">Total time</th><th class="r">Longest</th><th class="r">Distance</th><th>Last done</th></tr></thead>
-        <tbody id="cardio-body"></tbody>
-      </table>
+    <div class="cards" id="cards"></div>
+  </section>
+
+  <section class="panel">
+    <div>
+      <h2>Body areas</h2>
+      <div class="sub help" id="areas-sub"></div>
     </div>
+    <div class="areas" id="areas"></div>
   </section>
 
   <section class="panel" id="walking">
@@ -248,14 +281,81 @@ tbody tr:hover, tbody tr.sel { background: var(--s1-soft); }
     </div>
   </section>
 
+  <section class="panel" id="cardio" hidden>
+    <div>
+      <h2>Cardio</h2>
+      <div class="sub help" id="cardio-sub">Timed and distance exercises</div>
+    </div>
+    <div class="stats" id="cardio-stats"></div>
+    <div class="chart" id="c-cardio"></div>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Exercise</th><th class="r">Sessions</th><th class="r">Total time</th><th class="r">Longest</th><th class="r">Distance</th><th>Last done</th></tr></thead>
+        <tbody id="cardio-body"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="divider">
+    <h2>Details</h2>
+    <p class="help">Totals, charts and the full record for every exercise.</p>
+  </div>
+
+  <div class="tiles" id="tiles"></div>
+
+  <section class="panel">
+    <div class="panel-head">
+      <div>
+        <h2 id="ex-title">Exercise progress</h2>
+        <div class="sub" id="ex-sub"></div>
+      </div>
+      <div class="controls">
+        <select id="ex" aria-label="Exercise"></select>
+        <select id="metric" aria-label="Metric">
+          <option value="work">Working weight</option>
+          <option value="top">Heaviest set</option>
+          <option value="e1rm">Estimated 1-rep max</option>
+          <option value="vol">Session volume</option>
+          <option value="reps">Most reps in a set</option>
+        </select>
+      </div>
+    </div>
+    <div class="seg" role="group" aria-label="Time range" id="range">
+      <button type="button" data-r="90" aria-pressed="false">3M</button>
+      <button type="button" data-r="182" aria-pressed="false">6M</button>
+      <button type="button" data-r="365" aria-pressed="false">1Y</button>
+      <button type="button" data-r="0" aria-pressed="true">All</button>
+    </div>
+    <div class="legend"><span><i class="sw"></i><span id="lg-metric">Estimated 1RM, best set per session</span></span><span><i class="sw dot"></i>New personal record</span></div>
+    <div class="chart" id="c-ex"></div>
+    <div class="stats" id="ex-stats"></div>
+  </section>
+
+  <div class="two">
+    <section class="panel">
+      <div>
+        <h2>Workouts per week</h2>
+        <div class="sub help" id="wk-sub">Last 26 weeks</div>
+      </div>
+      <div class="chart" id="c-week"></div>
+    </section>
+    <section class="panel">
+      <div>
+        <h2>Monthly volume</h2>
+        <div class="sub help" id="vol-sub">Weight × reps across working sets</div>
+      </div>
+      <div class="chart" id="c-vol"></div>
+    </section>
+  </div>
+
   <section class="panel">
     <div>
-      <h2>Personal records</h2>
-      <div class="sub help">Tap a row to chart that exercise. Change compares your best estimated 1RM in the first and latest 30 days you trained it.</div>
+      <h2>All exercises</h2>
+      <div class="sub help">Tap a row to chart that exercise. Change compares your best working weight in the first and latest 30 days you trained it.</div>
     </div>
     <div class="tbl">
       <table>
-        <thead><tr><th>Exercise</th><th class="r">Sessions</th><th class="r">Best e1RM</th><th class="r">Heaviest set</th><th class="r">Most reps</th><th class="r">Change</th><th>Last done</th></tr></thead>
+        <thead><tr><th>Exercise</th><th class="r">Sessions</th><th class="r">Best working weight</th><th class="r">Heaviest set</th><th class="r">Most reps</th><th class="r">Change</th><th>Last done</th></tr></thead>
         <tbody id="pr-body"></tbody>
       </table>
     </div>
@@ -303,7 +403,7 @@ tbody tr:hover, tbody tr.sel { background: var(--s1-soft); }
     <p>Lift Log keeps only walking and hiking workouts from that file. Then tap <strong>Load Health files</strong>, go to <strong>iCloud Drive › Shortcuts</strong>, and select all three files at once.</p>
     <p>Each file you load adds to what's already saved here, so running the shortcuts every week or two builds a longer history. To run them on their own, open the <strong>Automation</strong> tab in Shortcuts and create a time-of-day automation that runs each one. To run it on its own, open the <strong>Automation</strong> tab in Shortcuts and create a time-of-day automation that runs Lift Log Steps.</p>
     <p><strong>Add it to your iPhone home screen:</strong> open this page in Safari, tap the Share button, then <strong>Add to Home Screen</strong>. The home-screen app keeps its own copy of your data, so load your CSV again the first time you open it from there.</p>
-    <p>The export doesn't record which unit you use, so set lb or kg above to match your Strong settings. Warm-up sets are left out of records and volume. Walking data from Apple Health is kept separate from your workouts and doesn't change workout counts or the streak. Timed and distance exercises, like the elliptical or a run, appear under Cardio, and distance follows the same setting (mi with lb, km with kg). Estimated 1RM uses the Epley formula (weight × (1 + reps ÷ 30)) on sets of 12 reps or fewer.</p>
+    <p>The export doesn't record which unit you use, so set lb or kg above to match your Strong settings. Warm-up sets are left out of records and volume. Walking data from Apple Health is kept separate from your workouts and doesn't change workout counts or the streak. Timed and distance exercises, like the elliptical or a run, appear under Cardio, and distance follows the same setting (mi with lb, km with kg). Working weight is the heaviest weight you lifted for 8 or more reps in a session. The estimated 1-rep max, in the exercise chart, uses the Epley formula (weight × (1 + reps ÷ 30)) on sets of 12 reps or fewer.</p>
   </section>
 </div>
 
@@ -311,7 +411,7 @@ tbody tr:hover, tbody tr.sel { background: var(--s1-soft); }
 (() => {
 const $ = id => document.getElementById(id);
 const DAY = 864e5;
-const state = { rows: [], cardio: [], steps: new Map(), dist: new Map(), walks: [], healthSample: true, sample: true, unit: 'lb', ex: null, metric: 'e1rm', range: 0 };
+const state = { rows: [], cardio: [], steps: new Map(), dist: new Map(), walks: [], healthSample: true, sample: true, unit: 'lb', ex: null, metric: 'work', stats: [], range: 0 };
 const store = {
   get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
   set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} },
@@ -535,16 +635,20 @@ function niceTicks(lo, hi, n = 4) {
 }
 
 /* ---------- aggregation ---------- */
+const WORK_REPS = 8;
 function sessionsFor(ex) {
   const m = new Map();
   state.rows.forEach(r => {
     if (r.ex !== ex || r.warm) return;
-    let s = m.get(r.wk); if (!s) m.set(r.wk, s = { t: r.t, d: r.d, e1rm: 0, top: 0, topReps: 0, vol: 0, reps: 0, best: null });
+    let s = m.get(r.wk); if (!s) m.set(r.wk, s = { t: r.t, d: r.d, e1rm: 0, top: 0, topReps: 0, vol: 0, reps: 0, best: null, sets: [], work: 0, workReps: 0 });
+    s.sets.push({ w: r.w, reps: r.reps });
+    if (r.reps >= WORK_REPS && (r.w > s.work || (r.w === s.work && r.reps > s.workReps))) { s.work = r.w; s.workReps = r.reps; }
     const e = e1(r.w, r.reps);
     if (e > s.e1rm) { s.e1rm = e; s.best = r; }
     if (r.w > s.top || (r.w === s.top && r.reps > s.topReps)) { s.top = r.w; s.topReps = r.reps; }
     s.vol += r.w * r.reps; s.reps = Math.max(s.reps, r.reps);
   });
+  m.forEach(s => { if (!s.work) { s.work = s.top; s.workReps = s.topReps; } });
   return [...m.values()].sort((a, b) => a.t - b.t);
 }
 function exerciseList() {
@@ -676,18 +780,19 @@ function renderExercise() {
     let note = '';
     if (key === 'e1rm' && s.best) note = `${fmtW(s.best.w)} ${U()} × ${s.best.reps}`;
     if (key === 'top') note = `${s.topReps} rep${s.topReps === 1 ? '' : 's'}`;
+    if (key === 'work') note = `${s.workReps} rep${s.workReps === 1 ? '' : 's'}`;
     return { t: s.t, d: s.d, y: v, pr, note };
   }).filter(p => p.y > 0);
   pts.forEach((p, i) => { if (i === 0) p.pr = false; });
   const cut = state.range ? Date.now() - state.range * DAY : -Infinity;
   const shown = pts.filter(p => p.t >= cut);
-  const units = { e1rm: U(), top: U(), vol: U(), reps: 'reps' }[key];
-  const names = { e1rm: 'Estimated 1RM, best set per session', top: 'Heaviest weight lifted per session', vol: 'Total weight × reps per session', reps: 'Most reps in a single set per session' };
+  const units = { work: U(), e1rm: U(), top: U(), vol: U(), reps: 'reps' }[key];
+  const names = { work: 'Working weight: heaviest set of 8 or more reps', e1rm: 'Estimated 1RM, best set per session', top: 'Heaviest weight lifted per session', vol: 'Total weight × reps per session', reps: 'Most reps in a single set per session' };
   $('lg-metric').textContent = names[key];
   $('ex-title').textContent = state.ex;
   const firstT = all.length ? all[0].d : null;
   $('ex-sub').textContent = `${all.length} session${all.length === 1 ? '' : 's'}` + (firstT ? ` since ${fmtD(firstT)}` : '');
-  const yFmt = (v, full) => full ? `${key === 'top' ? fmtW(v) : fmt(v, key === 'e1rm' && v < 100 ? 1 : 0)} ${units}` : (key === 'vol' ? compact(v) : fmt(v));
+  const yFmt = (v, full) => full ? `${key === 'top' || key === 'work' ? fmtW(v) : fmt(v, key === 'e1rm' && v < 100 ? 1 : 0)} ${units}` : (key === 'vol' ? compact(v) : fmt(v));
   lineChart($('c-ex'), shown, { yFmt, label: `${state.ex}: ${names[key]}` });
 
   const bestP = pts.reduce((a, p) => p.y > (a ? a.y : -1) ? p : a, null);
@@ -708,7 +813,7 @@ function renderWeeks() {
   const end = chartEnd();
   const bars = [];
   for (let i = 25; i >= 0; i--) {
-    const w = weekStart(end - i * 7 * DAY), d = new Date(w);
+    const w = weekStart(end + 3 * DAY - i * 7 * DAY), d = new Date(w);
     bars.push({ v: counts.get(w) || 0, d, lab: fmtD(d, { month: 'short', day: 'numeric' }) });
   }
   const active = bars.slice(Math.max(0, bars.findIndex(b => b.v > 0))), avg = active.reduce((a, b) => a + b.v, 0) / active.length;
@@ -734,15 +839,15 @@ function renderPRs() {
   const list = exerciseList().slice(0, 25);
   $('pr-body').innerHTML = list.map(o => {
     const ss = sessionsFor(o.ex); if (!ss.length) return '';
-    const be = ss.reduce((a, s) => s.e1rm > a.e1rm ? s : a, ss[0]);
+    const be = ss.reduce((a, s) => s.work > a.work ? s : a, ss[0]);
     const top = ss.reduce((a, s) => s.top > a.top || (s.top === a.top && s.topReps > a.topReps) ? s : a, ss[0]);
     const reps = Math.max(...ss.map(s => s.reps));
-    const k = o.bw ? 'reps' : 'e1rm';
+    const k = o.bw ? 'reps' : 'work';
     const f = Math.max(...ss.filter(s => s.t <= ss[0].t + 30 * DAY).map(s => s[k]));
     const l = Math.max(...ss.filter(s => s.t >= ss[ss.length - 1].t - 30 * DAY).map(s => s[k]));
     const ch = f > 0 && ss[ss.length - 1].t - ss[0].t > 45 * DAY ? (l - f) / f * 100 : null;
     return `<tr tabindex="0" data-ex="${esc(o.ex)}" class="${o.ex === state.ex ? 'sel' : ''}"><td>${esc(o.ex)}</td><td class="r">${o.n}</td>` +
-      `<td class="r">${o.bw ? '–' : fmt(be.e1rm) + ' ' + U()}</td>` +
+      `<td class="r">${o.bw ? '–' : fmtW(be.work) + ' ' + U()}</td>` +
       `<td class="r">${o.bw ? '–' : fmtW(top.top) + ' × ' + top.topReps}</td><td class="r">${reps}</td>` +
       `<td class="r">${ch == null ? '–' : `<span class="${ch >= 0 ? 'up' : 'down'}">${ch >= 0 ? '+' : ''}${fmt(ch, 0)}%</span>`}</td>` +
       `<td>${fmtD(new Date(o.last))}</td></tr>`;
@@ -767,7 +872,7 @@ function renderCardio() {
   c.forEach(r => { const w = weekStart(r.t); mins.set(w, (mins.get(w) || 0) + r.sec / 60); });
   const bars = [];
   for (let i = 25; i >= 0; i--) {
-    const w = weekStart(end - i * 7 * DAY), d = new Date(w);
+    const w = weekStart(end + 3 * DAY - i * 7 * DAY), d = new Date(w);
     bars.push({ v: Math.round(mins.get(w) || 0), d, lab: fmtD(d, { month: 'short', day: 'numeric' }) });
   }
   const active = bars.slice(Math.max(0, bars.findIndex(b => b.v > 0))), avg = active.reduce((a, b) => a + b.v, 0) / active.length;
@@ -836,7 +941,7 @@ function renderDist() {
   ]);
   const end = weekStart(last.getTime()), first = weekStart(keyDate(keys[0]).getTime()), bars = [];
   for (let i = 25; i >= 0; i--) {
-    const w = weekStart(end - i * 7 * DAY); if (w < first) continue;
+    const w = weekStart(end + 3 * DAY - i * 7 * DAY); if (w < first) continue;
     const o = wk.get(w), d = new Date(w);
     bars.push({ v: o ? +o.v.toFixed(2) : 0, n: o ? o.n : 0, d, lab: fmtD(d, { month: 'short', day: 'numeric' }) });
   }
@@ -867,7 +972,128 @@ function renderWalks() {
   $('walks-sub').textContent = `${fmt(ws.length)} walks loaded · showing the latest ${Math.min(10, ws.length)}`;
 }
 
+/* ---------- progress view ---------- */
+const shortName = ex => ex.replace(/\s*\([^)]*\)\s*$/, '');
+const kindOf = ex => (ex.match(/\(([^)]*)\)\s*$/) || [])[1] || '';
+const monthD = (t, withDay) => { const d = new Date(t), o = withDay ? { month: 'short', day: 'numeric' } : { month: 'long' }; if (d.getFullYear() !== new Date().getFullYear()) o.year = 'numeric'; return fmtD(d, o); };
+const latestT = () => state.rows.length ? state.rows[state.rows.length - 1].t : 0;
+function exStats(ex) {
+  const ss = sessionsFor(ex); if (!ss.length) return null;
+  const bw = ss.every(s => s.top === 0), val = s => bw ? s.reps : s.work;
+  const reps = ss.flatMap(s => s.sets.map(x => x.reps)).sort((a, b) => a - b);
+  const target = Math.min(reps[Math.floor(reps.length / 2)], 12);
+  const first = ss[0], last = ss[ss.length - 1], start = val(first), now = val(last);
+  let best = first; ss.forEach(s => { if (val(s) > val(best)) best = s; });
+  let streak = 0;
+  for (let i = ss.length - 1; i >= 0; i--) { const s = ss[i]; if (val(s) === now && s.sets.every(x => x.reps >= target)) streak++; else break; }
+  const ws = [...new Set(ss.flatMap(s => s.sets.map(x => x.w)))].sort((a, b) => a - b);
+  let step = Infinity; for (let i = 1; i < ws.length; i++) step = Math.min(step, ws[i] - ws[i - 1]);
+  const lim = state.unit === 'kg' ? [1.25, 5, 2.5] : [2.5, 10, 5];
+  step = isFinite(step) ? Math.min(Math.max(step, lim[0]), lim[1]) : lim[2];
+  const active = last.t >= latestT() - 45 * DAY;
+  return { ex, ss, bw, val, start, now, best, first, last, streak, target, step, active, change: start ? (now - start) / start * 100 : 0 };
+}
+const pct = c => `${c > 0 ? '+' : ''}${fmt(c, 0)}%`;
+const statusChip = st => st.ss.length < 2 ? '<span class="st st-hold">New</span>'
+  : st.now > st.start ? `<span class="st st-up">▲ ${fmt(st.change, 0)}%</span>`
+  : st.now < st.start ? `<span class="st st-down">▼ ${fmt(-st.change, 0)}%</span>` : '<span class="st st-hold">Same</span>';
+const amount = (st, v) => st.bw ? `${fmt(v)} reps` : `${fmtW(v)} ${U()}`;
+
+function renderHero() {
+  const q = state.stats.filter(s => s.ss.length >= 3 && s.last.t - s.first.t >= 21 * DAY);
+  if (!q.length) {
+    $('hero').innerHTML = '<p class="big">Your progress starts here</p><p>Once an exercise has 3 sessions over at least 3 weeks, this shows how much stronger you’ve gotten.</p>';
+    return;
+  }
+  const up = q.filter(s => s.now > s.start), down = q.filter(s => s.now < s.start), hold = q.length - up.length - down.length;
+  const since = monthD(Math.min(...q.map(s => s.first.t)));
+  const top = [...up].sort((a, b) => b.change - a.change).slice(0, 3).map(s => `${esc(shortName(s.ex))} ${pct(s.change)}`);
+  const rest = [hold ? `${hold} holding steady` : '', down.length ? `${down.length} lower than when you started` : ''].filter(Boolean).join(', ');
+  $('hero').innerHTML = `<p class="big">${up.length ? `Stronger on <em>${up.length} of ${q.length}</em> exercises since ${since}` : `Holding steady on ${q.length} exercises since ${since}`}</p>` +
+    (top.length ? `<p>Biggest gains: ${top.join(' · ')}.${rest ? ` ${rest[0].toUpperCase() + rest.slice(1)}.` : ''}</p>` : rest ? `<p>${rest[0].toUpperCase() + rest.slice(1)}.</p>` : '') +
+    `<p class="help">Compares your working weight, the heaviest weight you lifted for 8 or more reps, in your first and latest sessions.</p>`;
+}
+
+function renderWeekCheck() {
+  const cur = weekStart(Date.now()), weeks = [];
+  for (let i = 7; i >= 0; i--) weeks.push(weekStart(cur + 3 * DAY - i * 7 * DAY));
+  const days = new Map(), mins = new Map();
+  state.rows.forEach(r => { if (r.warm) return; const w = weekStart(r.t); (days.get(w) || days.set(w, new Set()).get(w)).add(dayKey(r.d)); });
+  state.cardio.forEach(r => { const w = weekStart(r.t); mins.set(w, (mins.get(w) || 0) + r.sec / 60); });
+  state.walks.forEach(r => { const w = weekStart(r.t); mins.set(w, (mins.get(w) || 0) + r.min); });
+  const D = w => days.has(w) ? days.get(w).size : 0, M = w => Math.round(mins.get(w) || 0);
+  const meter = (k, v, goal, unit) => `<div class="meter"><span class="k">${k}</span><span class="v">${fmt(v)}<small> of ${fmt(goal)} ${unit}</small></span>` +
+    `<div class="bar${v >= goal ? ' met' : ''}" role="img" aria-label="${fmt(v)} of ${fmt(goal)} ${unit}"><i style="width:${Math.min(100, v / goal * 100)}%"></i></div>` +
+    `<span class="kind">${v >= goal ? '✓ Goal met' : `${fmt(goal - v)} to go`}</span></div>`;
+  const prev = weeks[6];
+  $('meters').innerHTML = meter('Strength days this week', D(cur), 2, 'days') + meter('Active minutes this week', M(cur), 150, 'min');
+  const cells = (f, goal) => weeks.map(w => `<span class="c${f(w) >= goal ? ' met' : ''}${w === cur ? ' now' : ''}" title="Week of ${fmtD(new Date(w), { month: 'short', day: 'numeric' })}: ${f(w)}">${f(w) >= goal ? '✓' : f(w)}</span>`).join('');
+  const dates = weeks.map((w, i) => `<span>${w === cur ? 'Now' : i % 2 === 0 ? fmtD(new Date(w), { month: 'short', day: 'numeric' }) : ''}</span>`).join('');
+  $('wk-grid').innerHTML = `<span class="lab">Strength days each week (goal 2)</span><div class="wkrow">${cells(D, 2)}</div>` +
+    `<span class="lab">Active minutes each week (goal 150)</span><div class="wkrow">${cells(M, 150)}</div><div class="wkrow dates">${dates}</div>`;
+  const full = weeks.slice(0, 7), sm = full.filter(w => D(w) >= 2).length, am = full.filter(w => M(w) >= 150).length;
+  $('wk-note').textContent = `Last week: ${D(prev)} strength day${D(prev) === 1 ? '' : 's'} and ${M(prev)} active minutes. Over the last 7 full weeks you met the strength goal ${sm} time${sm === 1 ? '' : 's'} and the activity goal ${am} time${am === 1 ? '' : 's'}. Active minutes count cardio logged in Strong plus walks from Apple Health.`;
+}
+
+function renderReady() {
+  const ready = state.stats.filter(s => !s.bw && s.active && s.streak >= 3 && s.now > 0).sort((a, b) => b.streak - a.streak);
+  const row = s => `<div class="row"><div><div class="nm">${esc(shortName(s.ex))}</div><div class="kind">${fmtW(s.now)} ${U()} × ${s.target}, ${s.streak} sessions in a row</div></div>` +
+    `<div class="sugg">Try <b>${fmtW(s.now + s.step)}</b> ${U()}</div></div>`;
+  $('ready').innerHTML = ready.length ? ready.slice(0, 6).map(row).join('') +
+    (ready.length > 6 ? `<div class="row"><div class="kind">Also ready: ${ready.slice(6).map(s => esc(shortName(s.ex))).join(', ')}</div></div>` : '')
+    : '<p class="miss">Nothing yet. An exercise shows up here after 3 sessions in a row at the same weight with every set finished.</p>';
+  const lower = state.stats.filter(s => !s.bw && s.active && s.ss.length >= 3 && s.now < s.val(s.best) * 0.9);
+  $('lower').innerHTML = lower.length ? lower.map(s => {
+    const b = s.val(s.best), c = (b - s.now) / b * 100, lastBest = [...s.ss].reverse().find(x => s.val(x) >= b);
+    return `<div class="row"><div><div class="nm">${esc(shortName(s.ex))}</div><div class="kind">${fmtW(s.now)} ${U()} now, ${fmtW(b)} ${U()} as recently as ${monthD(lastBest.t, true)}</div></div><span class="st st-down">▼ ${fmt(c, 0)}%</span></div>`;
+  }).join('') : '<p class="miss">Nothing to flag. None of your exercises are more than 10% below their best.</p>';
+}
+
+function sparkHTML(vals) {
+  if (vals.length < 2) return '<div class="spark"></div>';
+  let lo = Math.min(...vals), hi = Math.max(...vals); if (hi === lo) { lo -= 1; hi += 1; }
+  const X = i => i / (vals.length - 1) * 100, Y = v => 8 + (1 - (v - lo) / (hi - lo)) * 84;
+  const line = vals.map((v, i) => `${i ? 'L' : 'M'}${X(i).toFixed(2)} ${Y(v).toFixed(2)}`).join('');
+  return `<div class="spark"><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">` +
+    `<path d="${line}L100 100L0 100Z" fill="var(--s1-soft)"/><path d="${line}" fill="none" stroke="var(--s1)" stroke-width="2" vector-effect="non-scaling-stroke" stroke-linejoin="round"/></svg>` +
+    `<i style="left:${X(vals.length - 1)}%;top:${Y(vals[vals.length - 1])}%"></i></div>`;
+}
+function renderCards() {
+  $('cards').innerHTML = state.stats.map(s =>
+    `<button type="button" class="card" data-ex="${esc(s.ex)}"><div class="panel-head" style="gap:6px;align-items:flex-start"><div><div class="nm">${esc(shortName(s.ex))}</div>${kindOf(s.ex) ? `<div class="kind">${esc(kindOf(s.ex))}</div>` : ''}</div>${statusChip(s)}</div>` +
+    `<div class="ww">${s.bw ? fmt(s.start) : fmtW(s.start)} → ${s.bw ? fmt(s.now) : fmtW(s.now)}<small> ${s.bw ? 'reps' : U()}</small></div>` +
+    sparkHTML(s.ss.map(s.val)) +
+    `<div class="kind">${s.ss.length} session${s.ss.length === 1 ? '' : 's'} · last ${monthD(s.last.t, true)}</div></button>`).join('') || '<p class="miss">No exercises yet.</p>';
+}
+
+const AREAS = [
+  ['Core', /crunch|plank|\babs?\b|abdominal|torso|rotation|twist|sit[- ]?up|oblique|wood ?chop|dead ?bug/i],
+  ['Legs', /leg|squat|deadlift|lunge|calf|hip|glute|abduct|adduct|hamstring|step[- ]?up|thrust/i],
+  ['Pull', /\brows?\b|pull|\bchin|curl|reverse fly|rear delt|shrug|\blat\b/i],
+  ['Push', /chest|bench|press|push|dip|tricep|fly|pec|shoulder|raise|extension/i]
+];
+const areaOf = ex => (AREAS.find(([, re]) => re.test(shortName(ex))) || ['Other'])[0];
+function renderAreas() {
+  const now = Date.now(), last = latestT(), e = new Date(now - last < 14 * DAY ? now : last);
+  const anchor = new Date(e.getFullYear(), e.getMonth(), e.getDate() + 1).getTime(), from = new Date(e.getFullYear(), e.getMonth(), e.getDate() - 27).getTime();
+  const days = new Map(), exs = new Map();
+  state.rows.forEach(r => {
+    const a = areaOf(r.ex); (exs.get(a) || exs.set(a, new Set()).get(a)).add(shortName(r.ex));
+    if (!r.warm && r.t >= from && r.t < anchor) (days.get(a) || days.set(a, new Set()).get(a)).add(dayKey(r.d));
+  });
+  const names = ['Legs', 'Push', 'Pull', 'Core'].concat(exs.has('Other') ? ['Other'] : []);
+  $('areas-sub').textContent = `Days you trained each area in the 4 weeks ending ${fmtD(e, { month: 'short', day: 'numeric' })}. Guidelines suggest working each major area at least 2 days a week, or 8 days in 4 weeks.`;
+  $('areas').innerHTML = names.map(a => {
+    const n = days.has(a) ? days.get(a).size : 0, list = exs.has(a) ? [...exs.get(a)] : [];
+    return `<div class="area"><div class="top"><span class="nm">${a}</span><span class="kind">${n} day${n === 1 ? '' : 's'} · ${fmt(n / 4, 1)} a week${n >= 8 ? ' · ✓ Goal met' : ''}</span></div>` +
+      `<div class="bar${n >= 8 ? ' met' : ''}" role="img" aria-label="${a}: ${n} of 8 days"><i style="width:${Math.min(100, n / 8 * 100)}%"></i></div>` +
+      `<span class="kind">${list.length ? esc(list.join(', ')) : 'No exercises for this area yet.'}</span></div>`;
+  }).join('');
+}
+
 function renderAll() {
+  state.stats = exerciseList().map(o => exStats(o.ex)).filter(Boolean);
+  renderHero(); renderWeekCheck(); renderReady(); renderCards(); renderAreas();
   renderTiles(); renderExercise(); renderWeeks(); renderVolume(); renderCardio(); renderWalking(); renderPRs();
   $('status').innerHTML = state.sample
     ? '<span class="chip">Sample</span> Showing made-up example data. <strong>Load your Strong CSV</strong> to see your own numbers, or drop the file here.'
@@ -884,7 +1110,7 @@ function loadText(text, name, save) {
   try {
     const { rows, cardio, unit } = fromStrong(text);
     if (state.healthSample) { state.steps = new Map(); state.dist = new Map(); state.walks = []; }
-    state.rows = rows; state.cardio = cardio; state.sample = false; state.file = name; state.ex = null; state.metric = 'e1rm';
+    state.rows = rows; state.cardio = cardio; state.sample = false; state.file = name; state.ex = null; state.metric = 'work';
     if (unit) setUnit(unit);
     if (save) { store.set('liftlog.csv', text); store.set('liftlog.name', name); }
     renderAll();
@@ -928,17 +1154,18 @@ const ban = $('banner');
 ['dragenter', 'dragover'].forEach(t => document.addEventListener(t, e => { e.preventDefault(); ban.classList.add('drag'); }));
 ['dragleave', 'drop'].forEach(t => document.addEventListener(t, e => { e.preventDefault(); if (t === 'drop' || !e.relatedTarget) ban.classList.remove('drag'); }));
 document.addEventListener('drop', e => readFiles(e.dataTransfer && e.dataTransfer.files));
-$('reset').addEventListener('click', () => { store.del('liftlog.csv'); store.del('liftlog.name'); ['liftlog.steps', 'liftlog.dist', 'liftlog.walks'].forEach(k => store.del(k)); Object.assign(state, sampleHealth()); state.healthSample = true; Object.assign(state, sample()); state.sample = true; state.ex = null; state.metric = 'e1rm'; setUnit('lb', false); renderAll(); });
+$('reset').addEventListener('click', () => { store.del('liftlog.csv'); store.del('liftlog.name'); ['liftlog.steps', 'liftlog.dist', 'liftlog.walks'].forEach(k => store.del(k)); Object.assign(state, sampleHealth()); state.healthSample = true; Object.assign(state, sample()); state.sample = true; state.ex = null; state.metric = 'work'; setUnit('lb', false); renderAll(); });
 $('u-lb').addEventListener('click', () => { setUnit('lb'); renderAll(); });
 $('u-kg').addEventListener('click', () => { setUnit('kg'); renderAll(); });
-$('ex').addEventListener('change', e => { state.ex = e.target.value; state.metric = 'e1rm'; renderExercise(); renderPRs(); });
+$('ex').addEventListener('change', e => { state.ex = e.target.value; state.metric = 'work'; renderExercise(); renderPRs(); });
 $('metric').addEventListener('change', e => { state.metric = e.target.value; renderExercise(); });
 $('range').addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return; state.range = +b.dataset.r;
   $('range').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b)); renderExercise();
 });
-const pick = tr => { state.ex = tr.dataset.ex; state.metric = 'e1rm'; renderExercise(); renderPRs(); $('ex').scrollIntoView({ behavior: 'smooth', block: 'center' }); };
+const pick = tr => { state.ex = tr.dataset.ex; state.metric = 'work'; renderExercise(); renderPRs(); $('ex').scrollIntoView({ behavior: 'smooth', block: 'center' }); };
 $('pr-body').addEventListener('click', e => { const tr = e.target.closest('tr'); if (tr) pick(tr); });
+$('cards').addEventListener('click', e => { const c = e.target.closest('.card'); if (c) pick(c); });
 $('pr-body').addEventListener('keydown', e => { const tr = e.target.closest('tr'); if (tr && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); pick(tr); } });
 let rz; window.addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => { renderExercise(); renderWeeks(); renderVolume(); renderCardio(); renderWalking(); }, 150); });
 

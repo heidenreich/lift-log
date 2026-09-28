@@ -6,11 +6,18 @@ Open `index.html` in a browser, tap **Load Strong CSV**, and pick your export. T
 
 ## What it shows
 
-- Totals: workouts, this year, last 30 days, week streak, total volume, exercises
-- Per-exercise progress over time: estimated 1RM, heaviest set, session volume or most reps, with PRs marked
-- Workouts per week (last 26 weeks) and monthly volume
-- Cardio: time and distance exercises (elliptical, runs, rows), with minutes per week and totals per exercise
-- A personal records table with change since you started each lift
+Progress first, built around steady machine and free-weight training rather than max lifts:
+
+- **Summary**: how many exercises you're stronger on since you started, and your biggest gains
+- **Weekly goals**: strength days (goal 2) and active minutes (goal 150) this week and for the last 8 weeks, based on the standard health guidelines for adults
+- **Ready to go up**: exercises where you've finished every set at the same weight 3+ sessions in a row, with the next weight to try
+- **Worth a look**: exercises more than 10% below your best
+- **Your exercises**: a card per exercise with starting → current working weight and a trend line
+- **Body areas**: days you trained legs, push, pull and core in the last 4 weeks
+- **Walking** and **Cardio** from Apple Health and Strong
+- **Details**: totals, per-exercise charts (working weight, heaviest set, estimated 1RM, volume, reps), workouts per week, monthly volume and the full exercise table
+
+**Working weight** is the heaviest weight you lifted for 8 or more reps in a session (or your heaviest set if you never did 8).
 
 ## Exporting from Strong
 
@@ -46,5 +53,5 @@ Open https://heidenreich.github.io/lift-log/ in Safari, tap Share, then **Add to
 
 - Warm-up sets (`W`) are excluded from records and volume; rest timer rows are ignored.
 - Rows with no reps but a time or distance count as cardio. Distance follows the unit switch: mi with lb, km with kg.
-- Estimated 1RM uses the Epley formula, `weight × (1 + reps / 30)`, on sets of 12 reps or fewer.
+- Estimated 1RM (in the exercise chart) uses the Epley formula, `weight × (1 + reps / 30)`, on sets of 12 reps or fewer.
 - Works with comma- or semicolon-delimited exports.
