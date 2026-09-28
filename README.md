@@ -2,6 +2,8 @@
 
 A single-page dashboard for workout data exported from the [Strong](https://www.strong.app/) app.
 
+New users: start with the [setup guide](https://heidenreich.github.io/lift-log/setup.html).
+
 Open `index.html` in a browser, tap **Load Strong CSV**, and pick your export. The file is read in the browser and never uploaded anywhere.
 
 ## What it shows

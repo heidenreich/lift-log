@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lift Log Setup</title>
+<meta name="theme-color" content="#f2f4f6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#111317" media="(prefers-color-scheme: dark)">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap">
+<style>
+:root {
+  --bg: #f2f4f6; --surface: #fcfcfb; --ink: #14171c; --ink-2: #4f5663; --muted: #7a8190;
+  --line: #dde1e7; --s1: #2a78d6; --s1-soft: rgba(42,120,214,.12); --good: #1a7f37;
+  --display: "Barlow Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --body: "Barlow", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root { color-scheme: dark; --bg: #111317; --surface: #1a1c21; --ink: #f3f4f6; --ink-2: #c1c6cf; --muted: #8b92a0; --line: #2d3139; --s1: #3987e5; --s1-soft: rgba(57,135,229,.18); --good: #4cc26b; }
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 17px; line-height: 1.55; }
+.wrap { max-width: 680px; margin: 0 auto; padding-inline: max(16px, env(safe-area-inset-left, 0px)) max(16px, env(safe-area-inset-right, 0px)); padding-block: calc(24px + env(safe-area-inset-top, 0px)) calc(56px + env(safe-area-inset-bottom, 0px)); display: flex; flex-direction: column; gap: 20px; }
+h1, h2 { font-family: var(--display); font-weight: 700; text-transform: uppercase; line-height: 1.05; margin: 0; text-wrap: balance; }
+h1 { font-size: clamp(34px, 8vw, 48px); }
+h2 { font-size: 24px; letter-spacing: .02em; }
+.eyebrow { font-size: 12px; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); font-weight: 600; }
+p { margin: 0; }
+.lede { color: var(--ink-2); }
+section { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px 16px; display: flex; flex-direction: column; gap: 12px; }
+.tag { align-self: flex-start; font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 2px 9px; border-radius: 99px; background: var(--s1-soft); color: var(--s1); }
+.tag.opt { background: var(--line); color: var(--ink-2); }
+ol, ul { margin: 0; padding-left: 22px; display: flex; flex-direction: column; gap: 8px; }
+li::marker { font-weight: 600; color: var(--muted); }
+strong { font-weight: 600; }
+code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: .9em; background: var(--bg); border: 1px solid var(--line); border-radius: 4px; padding: 1px 5px; white-space: nowrap; }
+.link { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.btn { display: inline-block; font-weight: 600; text-decoration: none; background: var(--s1); color: #fff; border-radius: 8px; padding: 10px 16px; }
+.btn:focus-visible, a:focus-visible { outline: 2px solid var(--s1); outline-offset: 2px; }
+.url { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 14px; color: var(--ink-2); word-break: break-all; }
+.note { font-size: 15px; color: var(--ink-2); border-left: 3px solid var(--line); padding-left: 12px; }
+dl { margin: 0; display: grid; gap: 10px; }
+dt { font-weight: 600; }
+dd { margin: 0; color: var(--ink-2); }
+a { color: var(--s1); }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header>
+    <div class="eyebrow">Setup guide · about 10 minutes</div>
+    <h1>Lift Log on your iPhone</h1>
+    <p class="lede">Lift Log turns your Strong workouts into a simple picture of your progress: which machines you're getting stronger on, when you're ready for more weight, and whether you're hitting your weekly goals. Your data stays on your phone and is never uploaded.</p>
+  </header>
+
+  <section>
+    <span class="tag">Step 1</span>
+    <h2>Put it on your home screen</h2>
+    <ol>
+      <li>Open this link in <strong>Safari</strong>. Other browsers can't add it to the home screen.
+        <div class="link"><a class="btn" href="https://heidenreich.github.io/lift-log/">Open Lift Log</a><span class="url">heidenreich.github.io/lift-log</span></div>
+      </li>
+      <li>Tap the <strong>Share</strong> button (the square with an arrow pointing up) at the bottom of the screen.</li>
+      <li>Scroll down, tap <strong>Add to Home Screen</strong>, then tap <strong>Add</strong>.</li>
+      <li>From now on, open Lift Log from the new icon on your home screen.</li>
+    </ol>
+  </section>
+
+  <section>
+    <span class="tag">Step 2</span>
+    <h2>Load your workouts from Strong</h2>
+    <ol>
+      <li>Open <strong>Strong</strong>, go to the <strong>Profile</strong> tab and tap the <strong>gear</strong> icon to open Settings.</li>
+      <li>Tap <strong>Export Strong Data</strong>, then choose <strong>Save to Files</strong> and tap <strong>Save</strong>.</li>
+      <li>Open Lift Log from your home screen and tap <strong>Load Strong CSV</strong>.</li>
+      <li>Pick the file you just saved. It's usually in <strong>Recents</strong> or <strong>On My iPhone</strong>.</li>
+      <li>Tap <strong>lb</strong> or <strong>kg</strong> at the top to match the unit you use in Strong.</li>
+    </ol>
+    <p class="note">The home-screen app keeps its own copy of your data, separate from Safari. If you loaded a file in Safari first, load it again from the home-screen icon.</p>
+  </section>
+
+  <section>
+    <span class="tag">Step 3</span>
+    <h2>Read your progress</h2>
+    <dl>
+      <dt>The headline</dt>
+      <dd>How many exercises you're stronger on since you started, and your biggest gains.</dd>
+      <dt>Weekly goals</dt>
+      <dd>The health guidelines for adults: strength training 2 days a week and 150 minutes of moderate activity. A green check means you hit it that week.</dd>
+      <dt>Ready to go up</dt>
+      <dd>Machines where you've finished every set at the same weight 3 times in a row, with a weight to try next time. Go up when the last reps feel steady, and go back down if your form slips.</dd>
+      <dt>Worth a look</dt>
+      <dd>Anything more than 10% below your best. That's fine if you lowered it on purpose.</dd>
+      <dt>Your exercises</dt>
+      <dd>One card per machine: where you started, where you are now, and a small trend line. Tap a card for its full chart.</dd>
+      <dt>Body areas</dt>
+      <dd>How many days you worked legs, push, pull and core in the last 4 weeks.</dd>
+    </dl>
+  </section>
+
+  <section>
+    <span class="tag">Every week or two</span>
+    <h2>Keep it up to date</h2>
+    <p>Lift Log doesn't update on its own. After a few new workouts, repeat Step 2: export from Strong again and load the new file. It replaces the old one, and your history is all there.</p>
+  </section>
+
+  <section>
+    <span class="tag opt">Optional</span>
+    <h2>Add your steps and walks</h2>
+    <p>Lift Log can also show daily steps, walking distance and walks from Apple Health. Your walks then count toward the 150-minute weekly goal. A web page can't read Apple Health directly, so a Shortcut saves the numbers to a file you load. You build the first one once, then copy it for the other two.</p>
+
+    <h2 style="font-size:19px">A. Daily steps</h2>
+    <ol>
+      <li>Open the <strong>Shortcuts</strong> app, tap <strong>+</strong>, and name the shortcut <strong>Lift Log Steps</strong>.</li>
+      <li>Tap <strong>Add Action</strong>, search for <strong>Find Health Samples</strong> and add it. Set the type to <strong>Steps</strong>, add the filter <strong>Start Date is in the last 90 days</strong>, set <strong>Group By</strong> to <strong>Day</strong>, and sort by <strong>Start Date</strong>, <strong>Oldest First</strong>.</li>
+      <li>Add <strong>Repeat with Each</strong>.</li>
+      <li>Inside the repeat, add <strong>Format Date</strong>. Tap the date, choose <strong>Repeat Item</strong>, then <strong>Start Date</strong>. Set the format to <strong>Custom</strong> and type <code>yyyy-MM-dd</code>.</li>
+      <li>Still inside the repeat, add <strong>Text</strong>. Put in <strong>Formatted Date</strong>, type a comma, then add <strong>Repeat Item</strong> and choose <strong>Value</strong>.</li>
+      <li>Below <strong>End Repeat</strong>, add <strong>Combine Text</strong>. Set it to combine <strong>Repeat Results</strong> with <strong>New Lines</strong>.</li>
+      <li>Add another <strong>Text</strong>. Type <code>Date,Steps</code>, start a new line, then add <strong>Combined Text</strong>.</li>
+      <li>Add <strong>Save File</strong>. Turn off <strong>Ask Where to Save</strong>, set the subpath to <code>lift-log-steps.csv</code>, and turn on <strong>Overwrite If File Exists</strong>.</li>
+      <li>Tap ▶ to run it. Allow access to <strong>Steps</strong> when asked.</li>
+    </ol>
+
+    <h2 style="font-size:19px">B. Walking distance</h2>
+    <ol>
+      <li>In your list of shortcuts, press and hold <strong>Lift Log Steps</strong>, tap <strong>Duplicate</strong>, and rename the copy <strong>Lift Log Distance</strong>.</li>
+      <li>Open it. In <strong>Find Health Samples</strong>, change the type to <strong>Walking + Running Distance</strong>.</li>
+      <li>Change the text <code>Date,Steps</code> to <code>Date,Distance</code>.</li>
+      <li>In <strong>Save File</strong>, change the subpath to <code>lift-log-distance.csv</code>.</li>
+      <li>Run it and allow access when asked.</li>
+    </ol>
+
+    <h2 style="font-size:19px">C. Walks</h2>
+    <ol>
+      <li>Duplicate <strong>Lift Log Steps</strong> again and rename the copy <strong>Lift Log Walks</strong>.</li>
+      <li>In <strong>Find Health Samples</strong>, change the type to <strong>Workouts</strong> and set <strong>Group By</strong> to <strong>None</strong>.</li>
+      <li>In <strong>Format Date</strong>, change the custom format to <code>yyyy-MM-dd HH:mm</code>.</li>
+      <li>Change the <strong>Text</strong> inside the repeat to: <strong>Formatted Date</strong>, comma, <strong>Repeat Item › Type</strong>, comma, <strong>Repeat Item › Duration</strong>, comma, <strong>Repeat Item › Distance</strong>.</li>
+      <li>Change the text <code>Date,Steps</code> to <code>Date,Type,Duration,Distance</code>.</li>
+      <li>In <strong>Save File</strong>, change the subpath to <code>lift-log-walks.csv</code>. Run it and allow access to <strong>Workouts</strong>.</li>
+    </ol>
+
+    <h2 style="font-size:19px">Load them</h2>
+    <ol>
+      <li>In Lift Log, tap <strong>Load Health files</strong>.</li>
+      <li>Go to <strong>Browse › iCloud Drive › Shortcuts</strong>, tap <strong>Select</strong>, pick all three <code>lift-log-</code> files and tap <strong>Open</strong>.</li>
+    </ol>
+    <p class="note">To refresh these, run the three shortcuts and load the files again. New days are added to what's already saved. You can also have them run on their own: in Shortcuts, open the <strong>Automation</strong> tab and set each one to run at a time you pick, like Sunday evening.</p>
+  </section>
+
+  <section>
+    <span class="tag opt">Good to know</span>
+    <h2>Questions</h2>
+    <dl>
+      <dt>Who can see my numbers?</dt>
+      <dd>Only you. Everything stays in Lift Log on your phone. It isn't sent anywhere, and it isn't shared with anyone else who uses Lift Log.</dd>
+      <dt>A menu name doesn't match these steps.</dt>
+      <dd>Apple and Strong sometimes rename things. Pick the closest match. The Walks shortcut is the most likely to differ.</dd>
+      <dt>I see example numbers instead of mine.</dt>
+      <dd>A "Sample" label means your file isn't loaded in this copy of the app. Load it again from the home-screen icon.</dd>
+      <dt>A file won't load.</dt>
+      <dd>The page shows what went wrong at the top. Send the file and the message to whoever set this up for you, so the page can be adjusted.</dd>
+    </dl>
+  </section>
+</main>
+</body>
+</html>
