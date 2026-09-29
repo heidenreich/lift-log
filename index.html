@@ -633,7 +633,14 @@ const distUnit = () => state.unit === 'kg' ? 'km' : 'mi';
 const fmtW = w => fmt(w, w % 1 ? 1 : 0);
 const fmtD = (d, o) => d.toLocaleDateString(undefined, o || { month: 'short', day: 'numeric', year: 'numeric' });
 const esc = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-const weekStart = t => { const d = new Date(t); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() - ((d.getDay() + 6) % 7)); return d.getTime(); };
+// First day of the week from the phone's region: Sunday in the US, Monday in most other places
+const WEEK_START = (() => {
+  const lang = (navigator.languages && navigator.languages[0]) || navigator.language || 'en-US';
+  try { const l = new Intl.Locale(lang), wi = (l.getWeekInfo && l.getWeekInfo()) || l.weekInfo; if (wi && wi.firstDay) return wi.firstDay % 7; } catch (e) {}
+  return /^en-(US|CA)|^en$|^es-US|^pt-BR|^ja|^ko|^zh-(TW|HK)|^he|^ar/i.test(lang) ? 0 : 1;
+})();
+const weekStart = t => { const d = new Date(t); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() - ((d.getDay() - WEEK_START + 7) % 7)); return d.getTime(); };
+const weekSpan = () => { const f = new Date(2026, 0, 4 + WEEK_START), l = new Date(2026, 0, 10 + WEEK_START), o = { weekday: 'long' }; return `${fmtD(f, o)} to ${fmtD(l, o)}`; };
 function compact(n) {
   if (n >= 1e6) return fmt(n / 1e6, 1) + 'M';
   if (n >= 1e4) return fmt(n / 1e3, 0) + 'k';
@@ -1028,13 +1035,14 @@ function renderWeekCheck() {
     `<div class="bar${v >= goal ? ' met' : ''}" role="img" aria-label="${fmt(v)} of ${fmt(goal)} ${unit}"><i style="width:${Math.min(100, v / goal * 100)}%"></i></div>` +
     `<span class="kind">${v >= goal ? '✓ Goal met' : `${fmt(goal - v)} to go`}</span></div>`;
   const prev = weeks[6];
-  $('meters').innerHTML = meter('Strength days this week', D(cur), 2, 'days') + meter('Active minutes this week', M(cur), 150, 'min');
+  $('meters').innerHTML = meter('Strength days this week', D(cur), 2, 'days') + meter('Active minutes this week', M(cur), 150, 'min') +
+    `<span class="kind" style="grid-column:1/-1">This week: ${fmtD(new Date(cur), { weekday: 'short', month: 'short', day: 'numeric' })} to ${fmtD(new Date(cur + 6.5 * DAY), { weekday: 'short', month: 'short', day: 'numeric' })}</span>`;
   const cells = (f, goal) => weeks.map(w => `<span class="c${f(w) >= goal ? ' met' : ''}${w === cur ? ' now' : ''}" title="Week of ${fmtD(new Date(w), { month: 'short', day: 'numeric' })}: ${f(w)}">${f(w) >= goal ? '✓' : f(w)}</span>`).join('');
   const dates = weeks.map((w, i) => `<span>${w === cur ? 'Now' : i % 2 === 0 ? fmtD(new Date(w), { month: 'short', day: 'numeric' }) : ''}</span>`).join('');
   $('wk-grid').innerHTML = `<span class="lab">Strength days each week (goal 2)</span><div class="wkrow">${cells(D, 2)}</div>` +
     `<span class="lab">Active minutes each week (goal 150)</span><div class="wkrow">${cells(M, 150)}</div><div class="wkrow dates">${dates}</div>`;
   const full = weeks.slice(0, 7), sm = full.filter(w => D(w) >= 2).length, am = full.filter(w => M(w) >= 150).length;
-  $('wk-note').textContent = `Last week: ${D(prev)} strength day${D(prev) === 1 ? '' : 's'} and ${M(prev)} active minutes. Over the last 7 full weeks you met the strength goal ${sm} time${sm === 1 ? '' : 's'} and the activity goal ${am} time${am === 1 ? '' : 's'}. Active minutes count cardio logged in Strong plus walks from Apple Health.`;
+  $('wk-note').textContent = `Weeks run ${weekSpan()}. Last week: ${D(prev)} strength day${D(prev) === 1 ? '' : 's'} and ${M(prev)} active minutes. Over the last 7 full weeks you met the strength goal ${sm} time${sm === 1 ? '' : 's'} and the activity goal ${am} time${am === 1 ? '' : 's'}. Active minutes count cardio logged in Strong plus walks from Apple Health.`;
 }
 
 function renderReady() {
